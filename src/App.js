@@ -79,7 +79,7 @@ class App extends Component {
               onChange={event => this.setState({ value:event.target.value })}
             />
           </div>
-          <Button variant="contained">Enter</Button>
+          <Button onClick={this.onSubmit} variant="contained">Enter</Button>
         </form>
 
         <hr/>
