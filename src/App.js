@@ -5,6 +5,7 @@ import { Component } from 'react';
 import Button from '@mui/material/Button';
 import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
+import CustomAppBar from "./components/AppBar"
 
 class App extends Component {
 
@@ -65,6 +66,7 @@ class App extends Component {
   render() {
     return (
       <div>
+        <CustomAppBar/>
         <h2>Lottery Contract</h2>
         <p>This contract is managed by {this.state.manager}</p>
         <p>There are currently {this.state.players.length} people already competing to win {web3.utils.fromWei(this.state.balance, "ether")} ether!</p>
