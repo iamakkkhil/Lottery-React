@@ -2,6 +2,9 @@ import './App.css';
 import web3 from './web3';
 import lottery from './lottery';
 import { Component } from 'react';
+import Button from '@mui/material/Button';
+import Alert from '@mui/material/Alert';
+import Snackbar from '@mui/material/Snackbar';
 
 class App extends Component {
 
@@ -11,7 +14,9 @@ class App extends Component {
     players: [],
     balance: "",
     value: "",
-    message: ""
+    message: "",
+    open: false,
+    severity: "success"
   }
 
   async componentDidMount() {
@@ -27,27 +32,35 @@ class App extends Component {
 
     const accounts = await web3.eth.getAccounts()
 
-    this.setState({ message:"Waiting on transcation success ...." })
+    this.setState({ message:"Waiting on transcation success", open:true, severity:"warning" })
+    this.setState({ open:true })
 
     await lottery.methods.enter().send({
       from: accounts[0],
       value: web3.utils.toWei(this.state.value, "ether")
     })
 
-    this.setState({ message:"You have been entered!" })
+    this.setState({ message:"You have been entered!", open:true, severity:"success"  })
   }
 
   onClick = async event => {
     const accounts = await web3.eth.getAccounts()
 
-    this.setState({ message:"Waiting on transcation success ...." })
+    this.setState({ message:"Waiting on transcation success", open:true, severity:"warning"  })
 
     await lottery.methods.pickWinner().send({
       from: accounts[0],
     })
 
-    this.setState({ message:"You have been entered!" })
+    this.setState({ message:"You have been entered!", open:true, severity:"success" })
   }
+
+  handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    this.setState({ open:false })
+  };
   
   render() {
     return (
@@ -66,17 +79,29 @@ class App extends Component {
               onChange={event => this.setState({ value:event.target.value })}
             />
           </div>
-          <button>Enter</button>
+          <Button variant="contained">Enter</Button>
         </form>
 
         <hr/>
 
         <h2>Ready to pick a winner?</h2>
-        <button onClick={this.onClick}>Pick a winner !</button>
+        <Button onClick={this.onClick} variant="contained">Pick a winner !</Button>
+        
 
         <hr/>
 
-        <h2>{this.state.message}</h2>
+        <Snackbar 
+          open={this.state.open} 
+          autoHideDuration={6000} 
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' } } 
+          onClose={this.handleClose}
+          key={'vertical' + 'center'}
+        >
+          <Alert onClose={this.handleClose} severity={this.state.severity} sx={{ width: '100%' }}>
+            {this.state.message}
+          </Alert>
+        </Snackbar>
+        {/* <h2>{this.state.message}</h2> */}
 
       </div>
     )
